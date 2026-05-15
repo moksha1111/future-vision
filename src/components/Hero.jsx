@@ -202,11 +202,35 @@ export default function Hero({ onProgress, disabled = false }) {
           style={{ "--ox": `${origin.x}%`, "--oy": `${origin.y}%` }}
         >
           <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+            {/* Measurement text — kept in the regular render tree (not
+                inside <mask>) because Firefox returns zeros for
+                getBBox / getStartPositionOfChar / getScreenCTM on text
+                that only exists inside a <mask>. That caused the zoom
+                origin to default to ~(0,0) in Firefox, which made the
+                FUTURE text move down-and-right with scale and looked
+                like a scroll. This element has the same geometry as
+                the masked one but is invisible (fill+stroke none). */}
+            <text
+              ref={textRef}
+              x="960"
+              y="540"
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontFamily='"Space Grotesk", system-ui, sans-serif'
+              fontWeight="700"
+              fontSize="320"
+              letterSpacing="-8"
+              fill="none"
+              stroke="none"
+              aria-hidden="true"
+              pointerEvents="none"
+            >
+              FUTURE
+            </text>
             <defs>
               <mask id="future-cutout">
                 <rect width="1920" height="1080" fill="white" />
                 <text
-                  ref={textRef}
                   x="960"
                   y="540"
                   textAnchor="middle"
